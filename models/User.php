@@ -1,104 +1,125 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: stas
+ * Date: 29.05.2018
+ * Time: 20:15
+ */
 
 namespace app\models;
 
-class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
+use Yii;
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
+
+/**
+ * Класс пользователя
+ * @package app\models\dbs
+ * @property int $id [int(10) unsigned]
+ * @property string $create_stamp [datetime]
+ * @property string $update_stamp [datetime]
+ * @property string $username [varchar(64)]
+ * @property string $password [varchar(128)]
+ * @property string $name [varchar(32)]
+ * @property string $surname [varchar(32)]
+ * @property string $patronymic [varchar(32)]
+ * @property int $id_itmo [int(10) unsigned]
+ * @property bool $status [tinyint(1)]
+ * @property int $role [int(1) unsigned]
+ * @property string $department [varchar(64)]
+ * @property string $access_token [varchar(128)]
+ * @property string $email [varchar(64)]
+ * @property string $avatar
+ * Если что это пиздеш
+ */
+class User extends ActiveRecord implements IdentityInterface
 {
-    public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
+    public static function tableName()
+    {
+        return '{{user}}';
+    }
 
-    private static $users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            'password' => 'demo',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
-
-
-    /**
-     * {@inheritdoc}
-     */
     public static function findIdentity($id)
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return self::findOne(['id' => $id]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return self::findOne(['access_token' => $token]);
     }
 
-    /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
-     */
-    public static function findByUsername($username)
-    {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
-
-        return null;
+    public static function findByUsername($username){
+        return self::findOne(['username' => $username]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getAuthKey()
     {
-        return $this->authKey;
+        return hash('sha512', $this->password);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function validateAuthKey($authKey)
     {
-        return $this->authKey === $authKey;
+        return hash('sha512', $this->password) === $authKey;
+    }
+
+    public function validatePassword($password)
+    {
+        return Yii::$app->getSecurity()->validatePassword($password, $this->password);
+    }
+
+    public function validateUsername($username)
+    {
+        return $username === $this->username;
+    }
+
+    public function validateStatus(): bool
+    {
+        return $this->status === 1;
+    }
+
+    public function getUserAttributes()
+    {
+        return $this->hasMany(UserAttributes::class, ['user_id' => 'id']);
+    }
+
+    public function userInitials(){
+        return $this->surname . ' ' .
+            mb_substr($this->name, 0, 1) . '. ' .
+            (!empty($this->patronymic)?(mb_substr(($this->patronymic), 0, 1) . '.') : '');
+    }
+
+    public function setToken()
+    {
+        $token = Yii::$app->getSecurity()->generatePasswordHash($this->create_stamp.$this->update_stamp);
+        $this->access_token = $token;
     }
 
     /**
-     * Validates password
-     *
-     * @param string $password password to validate
-     * @return bool if password provided is valid for current user
+     * @param $user
+     * @return string
      */
-    public function validatePassword($password)
-    {
-        return $this->password === $password;
+    public static function userAvatar($user){
+        if (!is_null($user->img_url)){
+            return Yii::getAlias('@web').'/files/avatars/'.$user->img_url;
+        } else {
+            return Yii::getAlias('@web').'/files/avatars/noavatar.png';
+        }
+
     }
+
+    public function getRoleName(){
+        switch ($this->role_id) {
+            case 3 :
+                return 'admin';
+            default :
+                return 'Член клуба';
+        }
+    }
+
 }

@@ -11,6 +11,8 @@ use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
 AppAsset::register($this);
+
+use app\models\User;
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -22,37 +24,46 @@ AppAsset::register($this);
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
+
+    <!-- Шрифт -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans" rel="stylesheet">
 </head>
 <body>
+<?php
+    $userinfo = !Yii::$app->user->isGuest ?' 
+        <img class="very-small-avatar" src="' .
+        User::userAvatar(Yii::$app->user->identity) .
+        '">'.
+        Yii::$app->user->identity->berry: "";
+?>
 <?php $this->beginBody() ?>
 
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => Yii::$app->name,
+        'brandLabel' => 'Студенческий клуб "Ягодка"',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
     echo Nav::widget([
+        'encodeLabels' => false,
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
+            ['label' => 'Рейтинг', 'url' => ['/site/rating']],
+//            ['label' => 'Мероприятия', 'url' => ['/site/events']],
+            !Yii::$app->user->isGuest ? (
+            [
+                'label' => $userinfo,
+                'items' => [
+                    ['label' => 'Профиль', 'url' => ['/site/profile', 'uid' => Yii::$app->user->identity->id]],
+                    '<li>' . Html::a('Выход', ['/site/logout'], ['data' => ['method' => 'post']]) . '</li>',
+                ]
+            ]
             ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post')
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            )
+                ['label' => 'Вход', 'url' => ['/site/login']]
+            ),
         ],
     ]);
     NavBar::end();
@@ -66,14 +77,6 @@ AppAsset::register($this);
         <?= $content ?>
     </div>
 </div>
-
-<footer class="footer">
-    <div class="container">
-        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
-
-        <p class="pull-right"><?= Yii::powered() ?></p>
-    </div>
-</footer>
 
 <?php $this->endBody() ?>
 </body>

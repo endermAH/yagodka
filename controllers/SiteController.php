@@ -9,6 +9,8 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\User;
+use app\models\UserAttributes;
 
 class SiteController extends Controller
 {
@@ -125,4 +127,27 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
+
+    public function actionProfile($uid)
+    {
+
+        $user = User::findIdentity($uid);
+        $userattributes = UserAttributes::getUserAttributes($uid);
+        return $this->render('userinfo',
+            [
+                'user' => $user,
+                'userattributes' => $userattributes,
+            ]);
+    }
+
+    public function actionRating()
+    {
+        $rating = User::find()->orderBy(['rating' => SORT_DESC])->all();
+        return $this->render('rating',
+            [
+                'rating' => $rating,
+            ]);
+    }
+
+
 }

@@ -1,6 +1,14 @@
 html,
 body {
     height: 100%;
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+.very-small-avatar{
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 5px;
 }
 
 .wrap {
@@ -27,7 +35,7 @@ body {
 }
 
 .jumbotron .btn {
-    font-size: 21px;
+    font-size: 22px;
     padding: 14px 24px;
 }
 
