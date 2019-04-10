@@ -11,6 +11,7 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\User;
 use app\models\UserAttributes;
+use app\models\RegistrationForm;
 
 class SiteController extends Controller
 {
@@ -149,5 +150,18 @@ class SiteController extends Controller
             ]);
     }
 
+    public function actionRegister() {
+        $model = new RegistrationForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->register()){
+            return $this->goBack();
+        }
+        $model->password = '';
+        $model->password_repeat = '';
+
+        return $this->render('register',[
+            'model' => $model
+        ]);
+    }
 
 }

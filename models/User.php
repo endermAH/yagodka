@@ -23,7 +23,6 @@ use yii\web\IdentityInterface;
  * @property string $name [varchar(32)]
  * @property string $surname [varchar(32)]
  * @property string $patronymic [varchar(32)]
- * @property int $id_itmo [int(10) unsigned]
  * @property bool $status [tinyint(1)]
  * @property int $role [int(1) unsigned]
  * @property string $department [varchar(64)]
@@ -34,6 +33,14 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+    const STATUS_UNAPPROVED = 0;
+    const STATUS_APPROVED = 1;
+    const STATUS_DELETED = 2;
+
+    const ROLE_MEMBER = 1;
+    const ROLE_MANAGER = 2;
+    const ROLE_ADMIN = 3;
+
     public static function tableName()
     {
         return '{{user}}';
@@ -115,7 +122,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getRoleName(){
         switch ($this->role_id) {
-            case 3 :
+            case User::ROLE_ADMIN :
                 return 'admin';
             default :
                 return 'Член клуба';
