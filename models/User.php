@@ -40,6 +40,7 @@ class User extends ActiveRecord implements IdentityInterface
     const ROLE_MEMBER = 1;
     const ROLE_MANAGER = 2;
     const ROLE_ADMIN = 3;
+    const ROLE_SECRETORY = 4;
 
     public static function tableName()
     {
@@ -124,6 +125,10 @@ class User extends ActiveRecord implements IdentityInterface
         switch ($this->role_id) {
             case User::ROLE_ADMIN :
                 return 'admin';
+            case User::ROLE_SECRETORY :
+                return 'Секретарь';
+            case User::ROLE_MANAGER:
+                return 'Менеджер клуба';
             default :
                 return 'Член клуба';
         }

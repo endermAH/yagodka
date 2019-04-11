@@ -92,12 +92,8 @@ use yii\helpers\Html;
     <div class="col-md-3">
 
         <!-- Блок с аватаркой -->
-        <div class="panel panel-default">
-            <div class="panel-body null-panel" >
-                <a href="<?= Url::to(['user/upload']) ?>">
-                    <img class="avatar" src="<?= User::userAvatar($user) ?>">
-                </a>
-            </div>
+        <div>
+            <img class="avatar" src="<?= User::userAvatar($user) ?>">
         </div>
 
     </div>
