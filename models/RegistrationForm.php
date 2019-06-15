@@ -29,10 +29,11 @@ class RegistrationForm extends Model
     public function rules()
     {
         return [
-            [['username', 'password', 'name', 'surname'], 'required', 'message' => "Это поле не может быть пустым"],
+            [['username', 'password', 'name', 'surname', 'berry'], 'required', 'message' => "Это поле не может быть пустым"],
             ['username', 'unique', 'targetClass' => User::class, 'message' => 'Этот логин уже занят, используйте другой'],
             //['email','unique','targetClass'=>User::class,'message' => 'Пользователь с таким адресом уже зарегистрирован'],
             ['username', 'string', 'max' => 64],
+            ['berry', 'string', 'max' => 64],
             ['password', 'string', 'min' => 6, 'max' => 128],
             [['name', 'surname', 'patronymic'], 'string', 'max' => 32, 'message' => 'Введенные данные должны содержать меньше 32 символов!'],
             ['username', 'match', 'pattern' => '/^[a-z]\w*$/', 'message' => 'Имя пользователя не может содержать некоторые символы'],

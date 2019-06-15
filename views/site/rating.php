@@ -24,7 +24,7 @@ $i = 1;
                             <div class="row row-<?= ((($i % 2) == 1)?('even'):('odd'))?>">
                                 <div class="col-xs-1">
                                     <div class="table-text">
-                                        <?=  (($i==1)?('<i class="fas fa-crown" style="color: #990099"></i>'):($i)) ?>
+                                        <center><?=  (($i==1)?('<i class="fas fa-crown" style="color: #990099"></i>'):($i)) ?></center>
                                     </div>
                                 </div>
                                 <div class="col-xs-2">

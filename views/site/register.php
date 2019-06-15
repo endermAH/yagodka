@@ -25,6 +25,7 @@ use yii\bootstrap\ActiveForm;
     echo $form->field($model, 'name')->textInput();
     echo $form->field($model, 'surname')->textInput();
     echo $form->field($model, 'patronymic')->textInput();
+    echo $form->field($model, 'berry')->textInput();
     echo Html::submitButton('Зарегистрироваться', ['class' => 'btn btn-primary', 'name' => 'register-button']);
 
     ActiveForm::end();

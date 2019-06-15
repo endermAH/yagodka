@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\RatingForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -22,18 +23,30 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['logout'],
                 'rules' => [
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['register', 'login'],
+                        'allow' => false,
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['register', 'login', 'index'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
+                    [
                         'allow' => true,
                         'roles' => ['@'],
                     ],
                 ],
+                'denyCallback' => function () {
+                    return Yii::$app->response->redirect('/');
+                },
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
                 ],
@@ -134,10 +147,16 @@ class SiteController extends Controller
 
         $user = User::findIdentity($uid);
         $userattributes = UserAttributes::getUserAttributes($uid);
+        $ratingModel = new RatingForm;
+        if ($ratingModel->load(Yii::$app->request->post()) && $ratingModel->changeRating($uid)){
+            $user = User::findIdentity($uid);
+            $ratingModel = new RatingForm;
+        }
         return $this->render('userinfo',
             [
                 'user' => $user,
                 'userattributes' => $userattributes,
+                'ratingModel' => $ratingModel
             ]);
     }
 
@@ -162,6 +181,17 @@ class SiteController extends Controller
         return $this->render('register',[
             'model' => $model
         ]);
+    }
+
+    public function actionAddRating($uid) {
+        $ratingModel = new RatingForm;
+        if ($ratingModel->load(Yii::$app->request->post()) && $ratingModel->changeRating($uid)) {
+            echo 1;
+            //return $this->refresh();
+        }
+        //return $this->refresh();
+        echo 2;
+        var_dump(Yii::$app->request->post());
     }
 
 }

@@ -10,6 +10,7 @@ use app\models\User;
 use yii\widgets\DetailView;
 use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
 
 
 //TODO переместить CSS
@@ -129,6 +130,26 @@ use yii\helpers\Html;
                     echo $attribute->attribute_name.' - '.$attribute->attribute_value;
                 }
                 ?>
+                <?php if((Yii::$app->user->identity->role_id == User::ROLE_ADMIN) || (Yii::$app->user->identity->role_id == User::ROLE_MANAGER) ): ?>
+                    <?php $form = ActiveForm::begin([
+                        'id' => 'rating-form',
+                        'layout' => 'horizontal',
+                        'fieldConfig' => [
+                            'template' => "<div class='row'> <div class=\"col-md-2\">{label}</div><div class=\"col-md-3\">{input}</div>
+                                <div class=\"col-md-6\">".
+                                    Html::submitButton('Изменить', ['class' => 'btn btn-primary', 'name' => 'login-button']).
+                                "</div></div>
+                                <div class='row'><div class=\"col-md-offset-1 col-md-11\">{error}</div></div> ",
+                            'labelOptions' => ['class' => 'col-md-12'],
+                        ],
+                    ]); ?>
+
+                    <?= $form->field($ratingModel, 'count')->textInput(['autofocus' => false]) ?>
+
+
+
+                    <?php ActiveForm::end(); ?>
+                <?php endif;?>
             </div>
         </div>
 

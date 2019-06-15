@@ -12,7 +12,7 @@ $this->title = 'My Yii Application';
 
         <p class="lead">Будь с нами, будь как мы!</p>
 
-        <?= Html::a('Присоединиться', ['/site/register'], ['class'=>'btn btn-lg btn-success']) ?>
+        <?php if(Yii::$app->user->isGuest) echo Html::a('Присоединиться', ['/site/register'], ['class'=>'btn btn-lg btn-success']) ?>
     </div>
 
     <div class="body-content">
