@@ -12,6 +12,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
+$this->title = $user->berry;
 
 //TODO переместить CSS
 ?>
@@ -124,12 +125,21 @@ use yii\bootstrap\ActiveForm;
 
                     ])
                 ?>
-                <?php
-                //var_dump($userattributes);
-                foreach ($userattributes as $attribute) {
-                    echo $attribute->attribute_name.' - '.$attribute->attribute_value;
-                }
-                ?>
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading"><b>Дополнительно</b></div>
+
+                    <!-- Table -->
+                    <table class="table">
+                        <?php foreach ($userattributes as $attribute): ?>
+                            <tr>
+                                <td width="25%"><?= $attribute->attribute_name ?>:</td>
+                                <td><?= $attribute->attribute_value ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </div>
+
                 <?php if((Yii::$app->user->identity->role_id == User::ROLE_ADMIN) || (Yii::$app->user->identity->role_id == User::ROLE_MANAGER) ): ?>
                     <?php $form = ActiveForm::begin([
                         'id' => 'rating-form',
@@ -144,10 +154,12 @@ use yii\bootstrap\ActiveForm;
                         ],
                     ]); ?>
 
+                    <div class="events" style="margin-bottom: 20px">
+                        <?php foreach ($events as $event): ?>
+                           <?= Html::a($event->name, ['site/event', 'id' => $event->id], ['class' => 'btn btn-warning']);?>
+                        <?php endforeach; ?>
+                    </div>
                     <?= $form->field($ratingModel, 'count')->textInput(['autofocus' => false]) ?>
-
-
-
                     <?php ActiveForm::end(); ?>
                 <?php endif;?>
             </div>

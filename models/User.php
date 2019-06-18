@@ -96,6 +96,12 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(UserAttributes::class, ['user_id' => 'id']);
     }
 
+    public function getEvents()
+    {
+        return $this->hasMany(Event::class, ['id' => 'event_id'])
+            ->viaTable(EventToUser::tableName(), ['user_id' => 'id']);
+    }
+
     public function userInitials(){
         return $this->surname . ' ' .
             mb_substr($this->name, 0, 1) . '. ' .

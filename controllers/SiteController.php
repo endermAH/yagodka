@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Event;
 use app\models\RatingForm;
 use Yii;
 use yii\filters\AccessControl;
@@ -148,6 +149,8 @@ class SiteController extends Controller
         $user = User::findIdentity($uid);
         $userattributes = UserAttributes::getUserAttributes($uid);
         $ratingModel = new RatingForm;
+        $events = $user->events;
+
         if ($ratingModel->load(Yii::$app->request->post()) && $ratingModel->changeRating($uid)){
             $user = User::findIdentity($uid);
             $ratingModel = new RatingForm;
@@ -156,7 +159,8 @@ class SiteController extends Controller
             [
                 'user' => $user,
                 'userattributes' => $userattributes,
-                'ratingModel' => $ratingModel
+                'ratingModel' => $ratingModel,
+                'events' => $events,
             ]);
     }
 

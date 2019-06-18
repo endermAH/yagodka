@@ -40,5 +40,5 @@ $this->title = 'Вход';
         </div>
 
     <?php ActiveForm::end(); ?>
-
+    <?php echo Yii::$app->getSecurity()->generatePasswordHash(123456);?>
 </div>
