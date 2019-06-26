@@ -18,4 +18,14 @@ class Event extends ActiveRecord
         return '{{event}}';
     }
 
+    public static function findIdentity($id)
+    {
+        return self::findOne(['id' => $id]);
+    }
+
+    public function getUsers()
+    {
+        return $this->hasMany(User::class, ['id' => 'user_id'])
+            ->viaTable(EventToUser::tableName(), ['event_id' => 'id']);
+    }
 }

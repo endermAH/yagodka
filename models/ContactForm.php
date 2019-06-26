@@ -4,61 +4,61 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
+use app\models\User;
+use yii\helpers\Html;
 
-/**
- * ContactForm is the model behind the contact form.
- */
 class ContactForm extends Model
 {
-    public $name;
+    //Регэксп взят из недр yii
+    const VALID_EMAIL = '/^[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/';
+    public $phone;
     public $email;
-    public $subject;
-    public $body;
-    public $verifyCode;
+    public $isu;
+    public $vk;
 
 
-    /**
-     * @return array the validation rules.
-     */
     public function rules()
     {
         return [
-            // name, email, subject and body are required
-            [['name', 'email', 'subject', 'body'], 'required'],
-            // email has to be a valid email address
-            ['email', 'email'],
-            // verifyCode needs to be entered correctly
-            ['verifyCode', 'captcha'],
+            [['phone', 'email', 'isu', 'vk'], 'required', 'message' => "Это поле не может быть пустым"],
+            ['email', 'match', 'pattern' => self::VALID_EMAIL],
+            //['isu', 'integer', 'min' => 100000, 'max' => 9999999],
+
         ];
     }
 
-    /**
-     * @return array customized attribute labels
-     */
+    public function register()
+    {
+        if (!$this->validate())
+            return false;
+
+        $user = Yii::$app->user->identity;
+        foreach ($this->attributes as $key => $value) {
+            $attr = UserAttributes::find()->where(['user_id' => Yii::$app->user->identity->getId(), 'attribute_name' => $key])->one();
+            $attr = $attr ? $attr : new UserAttributes();
+            $attr->user_id = $user->id;
+            $attr->attribute_name = $key;
+            $attr->attribute_value = $value;
+            $attr->save();
+        }
+        return true;
+    }
+
+
     public function attributeLabels()
     {
         return [
-            'verifyCode' => 'Verification Code',
+            'encodeLabel' => false,
+            'phone' => "Номер телефона",
+            'email' => 'email',
+            'isu' => 'Номер в ИСУ',
+            'vk' => 'Ссылка ВК',
         ];
     }
 
-    /**
-     * Sends an email to the specified email address using the information collected by this model.
-     * @param string $email the target email address
-     * @return bool whether the model passes validation
-     */
-    public function contact($email)
+    public function attributeHints()
     {
-        if ($this->validate()) {
-            Yii::$app->mailer->compose()
-                ->setTo($email)
-                ->setFrom([$this->email => $this->name])
-                ->setSubject($this->subject)
-                ->setTextBody($this->body)
-                ->send();
-
-            return true;
-        }
-        return false;
+        return [
+        ];
     }
 }

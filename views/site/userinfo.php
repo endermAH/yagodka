@@ -44,6 +44,7 @@ $this->title = $user->berry;
 
     .avatar{
         width: 100%;
+        padding-bottom: 15px;
     }
 
     .null-panel{
@@ -98,6 +99,47 @@ $this->title = $user->berry;
             <img class="avatar" src="<?= User::userAvatar($user) ?>">
         </div>
 
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <b>
+                    Контакты&ensp;
+                    <?php if($user->id === Yii::$app->user->identity->id):?>
+                        <a href="<?= Url::to(['site/contact']) ?>"><small><i class="glyphicon glyphicon-pencil btn-edit"></i></small></a>
+                    <?php endif; ?>
+                </b>
+            </div>
+
+            <!-- Table -->
+            <table class="table">
+                <?php foreach ($userattributes as $attribute): ?>
+                    <tr>
+                        <td>
+                            <?php switch($attribute->attribute_name){
+                                case "phone":
+                                    echo "<i class=\"fas fa-phone\"></i> :<a href='callto:".$attribute->attribute_value."'>";
+                                    break;
+                                case "email":
+                                    echo "<i class=\"fas fa-envelope\"></i> :<a href='mailto:".$attribute->attribute_value."'>";
+                                    break;
+                                case "vk":
+                                    echo "<i class=\"fab fa-vk\"></i> :<a href='".$attribute->attribute_value."'>";
+                                    break;
+                                case "isu":
+                                    echo "<i class=\"far fa-address-card\"></i> :<a href='https://isu.ifmo.ru/pls/apex/f?p=2143:PERSON:102529604385000::NO::PID:".$attribute->attribute_value."'>";
+                                    break;
+                                default:
+                                    echo $attribute->attribute_name;
+                            }
+                            ?>
+                            <?= $attribute->attribute_value ?></td>
+                        </td>
+                        <td></td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+        </div>
+
     </div>
 
     <!-- Правая колонка -->
@@ -121,24 +163,15 @@ $this->title = $user->berry;
                                 'attribute' => 'rating',
                                 'label' => 'Рейтинг'
                             ],
+                            [
+                                'attribute' => 'cash',
+                                'label' => 'Ягодки'
+                            ],
                         ],
 
                     ])
                 ?>
-                <div class="panel panel-default">
-                    <!-- Default panel contents -->
-                    <div class="panel-heading"><b>Дополнительно</b></div>
 
-                    <!-- Table -->
-                    <table class="table">
-                        <?php foreach ($userattributes as $attribute): ?>
-                            <tr>
-                                <td width="25%"><?= $attribute->attribute_name ?>:</td>
-                                <td><?= $attribute->attribute_value ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </table>
-                </div>
 
                 <?php if((Yii::$app->user->identity->role_id == User::ROLE_ADMIN) || (Yii::$app->user->identity->role_id == User::ROLE_MANAGER) ): ?>
                     <?php $form = ActiveForm::begin([

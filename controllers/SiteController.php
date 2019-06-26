@@ -123,13 +123,24 @@ class SiteController extends Controller
     public function actionContact()
     {
         $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
+        $phone = UserAttributes::find()->where(['user_id' => Yii::$app->user->identity->getId(), 'attribute_name' => 'phone'])->one();
+        $model->phone = $phone ? $phone->attribute_value : '';
+        $isu = UserAttributes::find()->where(['user_id' => Yii::$app->user->identity->getId(), 'attribute_name' => 'isu'])->one();
+        $model->isu = $isu ? $isu->attribute_value : '';
+        $vk = UserAttributes::find()->where(['user_id' => Yii::$app->user->identity->getId(), 'attribute_name' => 'vk'])->one();
+        $model->vk = $vk ? $vk->attribute_value : '';
+        $email = UserAttributes::find()->where(['user_id' => Yii::$app->user->identity->getId(), 'attribute_name' => 'email'])->one();
+        $model->email = $email ? $email->attribute_value :'';
 
-            return $this->refresh();
+        if ($model->load(Yii::$app->request->post()) && $model->register()) {
+            return $this->redirect([
+                'site/profile',
+                'uid' => 1
+            ]);
         }
-        return $this->render('contact', [
+        return $this->render('editcontact', [
             'model' => $model,
+            'user' => Yii::$app->user->identity,
         ]);
     }
 
@@ -147,7 +158,7 @@ class SiteController extends Controller
     {
 
         $user = User::findIdentity($uid);
-        $userattributes = UserAttributes::getUserAttributes($uid);
+        $userattributes = $user->userAttributes;
         $ratingModel = new RatingForm;
         $events = $user->events;
 
@@ -198,4 +209,11 @@ class SiteController extends Controller
         var_dump(Yii::$app->request->post());
     }
 
+    public function actionEvent($id) {
+        $event = Event::findIdentity($id);
+        return $this->render('event',
+            [
+                'event' => $event,
+            ]);
+    }
 }

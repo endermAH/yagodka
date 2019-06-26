@@ -19,8 +19,8 @@ class RatingForm extends Model
     public function rules()
     {
         return [
-            ['count', 'required'],
-            ['count', 'integer']
+            ['count', 'required', 'message' => 'Это поле не может быть пустым'],
+            ['count', 'integer', 'message' => 'Неверный формат числа']
         ];
     }
 
@@ -35,6 +35,7 @@ class RatingForm extends Model
         if ($this->validate()){
             $user = User::findIdentity($uid);
             $user->rating = $user->rating + $this->count;
+            $user->cash = $user->cash + $this->count;
             return $user->save();
         }
     }

@@ -8,10 +8,12 @@
 
 use yii\helpers\Html;
 use app\models\User;
+use app\models\EventToUser;
 
 $this->title = $event->name;
-$description = json_decode($test['description'], true);
-$manager = User::find()->where(['event_id' => $event['id'], 'role' => '1'])->one();
+$manager_id = EventToUser::find()->where(['event_id' => $event['id'], 'role' => '1'])->one()->id;
+$manager = User::findIdentity($manager_id);
+$team = $event->users;
 
 ?>
 
@@ -19,7 +21,10 @@ $manager = User::find()->where(['event_id' => $event['id'], 'role' => '1'])->one
     .medium-avatar {
         width: 135px;
         height: 135px;
-        border-radius: 50%;
+        border-radius: 100%;
+        overflow: hidden;
+        border: 2px solid white;
+        box-shadow: 0 0  0 2px #990099;
     }
 
     #inline {
@@ -52,9 +57,6 @@ $manager = User::find()->where(['event_id' => $event['id'], 'role' => '1'])->one
         height: 40%;
     }
 
-    .col-md-3 {
-        padding: 1px 1px;
-    }
 </style>
 
 <div class="row">
@@ -70,29 +72,11 @@ $manager = User::find()->where(['event_id' => $event['id'], 'role' => '1'])->one
 </div>
 <div class="row">
 
-    <div class="col-md-8">
-        <div class="row">
-            <div class="col-md-12" style="padding: 1px 1px;">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 style="line-height: 1; margin: 0px">Информация о мероприятии</h3>
-                    </div>
-
-                    <div class="panel-body">
-                        <!-- style="padding: 0 20%"-->
-                        <p></p>
-                        <p><b>Описание:</b> <?= $event['description'] ?> </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
+    <div class="col-md-4" style="padding: 10px">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div id="inline">
-                    <div class="one"><?= Html::img(User::userAvatar($manager->getId()), ['class' => "medium-avatar"]) ?></div>
+                    <div class="one"><?= Html::img(User::userAvatar($manager), ['class' => "medium-avatar"]) ?></div>
                     <div class="two">
                         <h3 style="margin-bottom: 20px;">
                             <?= $manager['surname'] . ' ' . $manager['name'] . ' ' . $manager['patronymic'] ?>
@@ -100,26 +84,72 @@ $manager = User::find()->where(['event_id' => $event['id'], 'role' => '1'])->one
                 </div>
 
             </div>
-            <div class="panel-body">
-<!--                <h4>О руководителе</h4>-->
-<!--                <p><b>Подразделение:</b> --><?//= $teacher['department']; ?><!--</p>-->
-<!--                <p><b>Должность:</b> --><?//= User::rolesLabels()[$teacher['role']] ?><!--</p>-->
-<!--                <hr>-->
-<!--                <h4>Контактная информация</h4>-->
-<!--                <p><b>Электронная почта:</b> --><?//= Html::a($teacher['email'], 'mailto:' . $teacher['email']); ?><!--</p>-->
-<!--                <p><b>Телефон:</b> --><?//= Html::a(88005553535, 'callto: 88005553535'); ?><!-- </p>-->
+            <div class="panel-body" style="padding: 0 15px 0 15px">
+                <?php $i = 0; foreach ($team as $member):?>
+                    <?php if($member->id != $manager_id):?>
+                        <div class="row row-<?= ((($i % 2) == 1)?('even'):('odd'))?>">
+                            <div class="col-xs-4">
+                                <div class="img-small-borders">
+                                    <img src="<?= \app\models\User::userAvatar(\app\models\User::findIdentity($member->id)) ?>" class="img-small">
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="table-text">
+                                    <?= Html::a($member->berry, ['/site/profile', 'uid' => $member->id], ['class' => 'berry-link'] ) ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                    <?php $i++ ?>
+                <?php endforeach; ?>
             </div>
         </div>
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                О документе
+                О мероприятии
             </div>
-<!--            <div class="panel-body">-->
-<!--                <p><b>Время исполнения:</b> --><?//= $description['duration'] ?><!-- </p>-->
-<!--            </div>-->
+            <div class="panel-body">
+                <p><b>Дата проведения:</b> <?= $event['date'] ?> </p>
+                <p><b>Уровень мероприятия:</b> <?= $event['level'] ?> </p>
+                <p><b>Место проведения:</b> <?= $event['place'] ?> </p>
+            </div>
         </div>
     </div>
+
+    <div class="col-md-5" >
+        <div class="row" style="padding: 10px">
+            <div class="col-md-12" style="padding: 1px 1px;">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Описание
+                    </div>
+
+                    <div class="panel-body">
+                        <?= $event['description'] ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3" >
+        <div class="row" style="padding: 10px">
+            <div class="col-md-12" style="padding: 1px 1px;">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        План
+                    </div>
+
+                    <div class="panel-body">
+                        <?= $event['program'] ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 
 
