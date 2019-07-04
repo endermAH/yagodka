@@ -4,6 +4,7 @@
 
 use yii\helpers\Html;
 $this->title = 'Ягодка';
+$this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons/logo.png']);
 ?>
 <div class="site-index">
 

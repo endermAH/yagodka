@@ -8,8 +8,8 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\captcha\Captcha;
 
-$this->title = 'Contact';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = 'Контакты';
+$this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons/settings.png']);
 ?>
 <div class="site-contact">
     <h1><?= Html::encode($this->title) ?></h1>

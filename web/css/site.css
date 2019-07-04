@@ -133,11 +133,11 @@ a.desc:after {
 .table-body, .settings-body{
     /*box-shadow: 4px 4px rgba(0, 0, 0, 0.32);*/
     padding: 0;
-    font-size: 2vh;
+    /*font-size: 2vh;*/
 }
 
 .row-special {
-    background-color: #990099;
+    background-color: #9c5685;
     text-align: center;
     font-size: 2.5vh;
     color: white;
@@ -149,7 +149,7 @@ a.desc:after {
     height: 8vh;
     overflow: hidden;
     border: 2px solid white;
-    box-shadow: 0 0  0 2px #990099;
+    box-shadow: 0 0  0 2px #9c5685;
     margin: 5px;
 }
 
@@ -186,10 +186,17 @@ a.desc:after {
     height: 9vh;
 }
 
-.berry-link {
-    color: #990099;
+a {
+    color: #9c5685;
 }
 
-.berry-link:hover {
-    color: #990099;
+a:hover {
+    color: #9c5685;
+}
+
+.new {
+    background-color: #9c5685;
+    border-radius: 100%;
+    padding: 0 4px 0 4px;
+    color: white;
 }

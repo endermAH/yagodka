@@ -11,6 +11,8 @@ use app\models\User;
 use app\models\EventToUser;
 
 $this->title = $event->name;
+$this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons/logo.png']);
+
 $manager_id = EventToUser::find()->where(['event_id' => $event['id'], 'role' => '1'])->one()->id;
 $manager = User::findIdentity($manager_id);
 $team = $event->users;
@@ -24,7 +26,7 @@ $team = $event->users;
         border-radius: 100%;
         overflow: hidden;
         border: 2px solid white;
-        box-shadow: 0 0  0 2px #990099;
+        box-shadow: 0 0  0 2px #9c5685;
     }
 
     #inline {

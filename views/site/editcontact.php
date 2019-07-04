@@ -13,6 +13,7 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
 $this->title = $user->berry;
+$this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons/settings.png']);
 
 //TODO переместить CSS
 ?>
@@ -105,7 +106,7 @@ $this->title = $user->berry;
 
     <div class="form-group">
         <div class="col-lg-offset-1 col-lg-11">
-            <?= Html::submitButton('Применить', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+            <?= Html::submitButton('Применить' ,['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
         </div>
     </div>
 

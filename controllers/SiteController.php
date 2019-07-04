@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use app\models\Event;
+use app\models\EventForm;
+use app\models\Rating;
 use app\models\RatingForm;
 use Yii;
 use yii\filters\AccessControl;
@@ -25,7 +27,7 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout'],
+                //'only' => ['logout'],
                 'rules' => [
                     [
                         'actions' => ['register', 'login'],
@@ -33,7 +35,7 @@ class SiteController extends Controller
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['register', 'login', 'index'],
+                        'actions' => ['register', 'login', 'index', 'rating', 'events'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
@@ -43,7 +45,7 @@ class SiteController extends Controller
                     ],
                 ],
                 'denyCallback' => function () {
-                    return Yii::$app->response->redirect('/');
+                    return Yii::$app->response->redirect(['/site/index']);
                 },
             ],
             'verbs' => [
@@ -135,7 +137,7 @@ class SiteController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->register()) {
             return $this->redirect([
                 'site/profile',
-                'uid' => 1
+                'uid' => Yii::$app->user->getId(),
             ]);
         }
         return $this->render('editcontact', [
@@ -215,5 +217,52 @@ class SiteController extends Controller
             [
                 'event' => $event,
             ]);
+    }
+
+    public function actionMembers() {
+        $users = User::find()->orderBy('status')->all();
+        return $this->render('members',[
+            'users' => $users
+        ]);
+    }
+
+    public function actionConfirm($uid) {
+        $user = User::findIdentity($uid);
+        $user->status = !$user->status;
+        $user->save();
+        return $this->redirect(['site/members']);
+    }
+
+    public function actionUserrating($uid) {
+        $rating = Rating::find()->where(['user_id' => $uid])->all();
+        $username = User::findIdentity($uid)->berry;
+        //var_dump($rating);
+        //die;
+        return $this->render('userrating', [
+            'rating' => $rating,
+            'username' => $username
+        ]);
+    }
+
+    public function actionNewevent() {
+        $model = new EventForm();
+
+        if ($model->load(Yii::$app->request->post())){
+
+            if ($model->orgFlag) {
+                if ($model->register()) return $this->goBack();
+            } else {
+                $users = User::find()->where(['<>','id', Yii::$app->user->getId()])->andWhere(['status' => 1])->all();
+                return $this->render('addorgs', [
+                    'users' => $users,
+                    'model' => $model,
+                        ]
+                );
+            }
+        }
+
+        return $this->render('newevent', [
+            'model' => $model,
+        ]);
     }
 }

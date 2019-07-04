@@ -15,12 +15,15 @@ use app\models\User;
 class RatingForm extends Model
 {
     public $count;
+    public $comment;
 
     public function rules()
     {
         return [
             ['count', 'required', 'message' => 'Это поле не может быть пустым'],
-            ['count', 'integer', 'message' => 'Неверный формат числа']
+            ['count', 'integer', 'message' => 'Неверный формат числа'],
+            ['comment', 'required', 'message' => 'Введите комментарий'],
+            ['comment', 'string', 'message' => 'Неверный формат комментария'],
         ];
     }
 
@@ -33,10 +36,14 @@ class RatingForm extends Model
 
     public function changeRating($uid){
         if ($this->validate()){
-            $user = User::findIdentity($uid);
-            $user->rating = $user->rating + $this->count;
-            $user->cash = $user->cash + $this->count;
-            return $user->save();
+            $record = new Rating();
+            foreach ($this->attributes as $key => $value) {
+                $record->$key = $value;
+            }
+            $record->user_id = $uid;
+            return $record->save();
         }
     }
+
+
 }

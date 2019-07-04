@@ -8,6 +8,7 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
 $this->title = 'Вход';
+$this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons/user.png']);
 //$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="col-md-4"></div>

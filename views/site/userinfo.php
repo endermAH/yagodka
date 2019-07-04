@@ -13,6 +13,7 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
 $this->title = $user->berry;
+$this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons/user.png']);
 
 //TODO переместить CSS
 ?>
@@ -161,7 +162,9 @@ $this->title = $user->berry;
                             ],
                             [
                                 'attribute' => 'rating',
-                                'label' => 'Рейтинг'
+                                'label' => 'Рейтинг',
+                                'value' => Html::a($user->rating(), ['site/userrating', 'uid' => $user->id]),
+                                'format' => 'raw'
                             ],
                             [
                                 'attribute' => 'cash',
@@ -172,29 +175,42 @@ $this->title = $user->berry;
                     ])
                 ?>
 
+                <div class="events" style="margin-bottom: 20px">
+                    <?php foreach ($events as $event): ?>
+                        <?= Html::a($event->name, ['site/event', 'id' => $event->id], ['class' => 'btn btn-warning']);?>
+                    <?php endforeach; ?>
+                </div>
 
                 <?php if((Yii::$app->user->identity->role_id == User::ROLE_ADMIN) || (Yii::$app->user->identity->role_id == User::ROLE_MANAGER) ): ?>
                     <?php $form = ActiveForm::begin([
                         'id' => 'rating-form',
                         'layout' => 'horizontal',
                         'fieldConfig' => [
-                            'template' => "<div class='row'> <div class=\"col-md-2\">{label}</div><div class=\"col-md-3\">{input}</div>
-                                <div class=\"col-md-6\">".
-                                    Html::submitButton('Изменить', ['class' => 'btn btn-primary', 'name' => 'login-button']).
-                                "</div></div>
-                                <div class='row'><div class=\"col-md-offset-1 col-md-11\">{error}</div></div> ",
+                            'template' => "
+                                <div class='row'><div class=\"col-md-12\">{input}</div></div>
+                                <div class='row'><div class=\"col-md-12\">{error}</div></div> ",
                             'labelOptions' => ['class' => 'col-md-12'],
                         ],
                     ]); ?>
-
-                    <div class="events" style="margin-bottom: 20px">
-                        <?php foreach ($events as $event): ?>
-                           <?= Html::a($event->name, ['site/event', 'id' => $event->id], ['class' => 'btn btn-warning']);?>
-                        <?php endforeach; ?>
-                    </div>
-                    <?= $form->field($ratingModel, 'count')->textInput(['autofocus' => false]) ?>
+                    <?php
+                    $button = Html::submitButton('Изменить', ['class' => 'btn btn-success', ]);
+                    $form = "
+                    <div class='row' style='padding: 15px'>
+                        <div class='col-md-5'>
+                            {$form->field($ratingModel, 'count')->textInput(['autofocus' => false, 'placeholder' => 'Количество баллов'])}
+                        </div>
+                        <div class='col-md-5'>
+                            {$form->field($ratingModel, 'comment')->textInput(['autofocus' => false, 'placeholder' => 'Комментарий'])}
+                        </div>
+                        <div class='col-md-2'>
+                            {$button}
+                        </div>
+                    </div>"; ?>
+                    <?= $form ?>
                     <?php ActiveForm::end(); ?>
                 <?php endif;?>
+
+
             </div>
         </div>
 

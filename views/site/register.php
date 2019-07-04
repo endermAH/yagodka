@@ -9,6 +9,8 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
+$this->title = "Регистрация";
+$this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons/user.png']);
 ?>
 <div class="col-md-6 col-md-offset-3">
 

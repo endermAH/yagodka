@@ -38,9 +38,9 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_DELETED = 2;
 
     const ROLE_MEMBER = 1;
-    const ROLE_MANAGER = 2;
-    const ROLE_ADMIN = 3;
-    const ROLE_SECRETORY = 4;
+    const ROLE_MANAGER = 3;
+    const ROLE_ADMIN = 4;
+    const ROLE_SECRETORY = 2;
 
     public static function tableName()
     {
@@ -138,6 +138,11 @@ class User extends ActiveRecord implements IdentityInterface
             default :
                 return 'Член клуба';
         }
+    }
+
+    public function rating() {
+        $count = Rating::find()->where(['user_id' => $this->id])->sum('count');
+        return $count;
     }
 
 }

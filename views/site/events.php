@@ -9,4 +9,6 @@
 
 use yii\helpers\Html;
 $this->title = 'Наши мероприятия';
+$this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons/logo.png']);
+
 ?>

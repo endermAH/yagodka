@@ -19,7 +19,6 @@ use app\models\User;
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
 <head>
-    <?php $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'favicon.ico']); ?>
     <meta charset="<?= Yii::$app->charset ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,7 +28,7 @@ use app\models\User;
 
     <!-- Шрифт -->
     <link href="https://fonts.googleapis.com/css?family=Nunito+Sans" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+<!--    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">-->
 
 </head>
 <body>
@@ -39,6 +38,8 @@ use app\models\User;
         User::userAvatar(Yii::$app->user->identity) .
         '">'.
         Yii::$app->user->identity->berry: "";
+
+    $new = User::find()->where(['status' => 0])->count();
 ?>
 <?php $this->beginBody() ?>
 
@@ -56,7 +57,9 @@ use app\models\User;
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => 'Рейтинг', 'url' => ['/site/rating']],
-//            ['label' => 'Мероприятия', 'url' => ['/site/events']],
+            !Yii::$app->user->isGuest&&Yii::$app->user->identity->role_id > User::ROLE_MANAGER ?
+                ['label' => "Участники". ($new > 0 ?" <sup><span class='new'> {$new} </span></sup>":""), 'url' => ['/site/members']]:"",
+//          ['label' => 'Мероприятия', 'url' => ['/site/events']],
             !Yii::$app->user->isGuest ? (
             [
                 'label' => $userinfo,
