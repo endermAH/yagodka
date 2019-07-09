@@ -45,7 +45,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
                                     </div>
                                     <div class="col-xs-3">
                                         <div class="table-text">
-                                            <span id="heart-count-'+ i +'"> <?= $user->rating ?></span>
+                                            <span id="heart-count-'+ i +'"> <?= $user->rating()?Html::a($user->rating(), ['site/userrating', 'uid' => $user->id]):0 ?></span>
                                         </div>
                                     </div>
                                 </div>

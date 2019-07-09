@@ -10,6 +10,7 @@ use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 use yii\helpers\Url;
+use app\models\Event;
 
 AppAsset::register($this);
 
@@ -39,7 +40,9 @@ use app\models\User;
         '">'.
         Yii::$app->user->identity->berry: "";
 
-    $new = User::find()->where(['status' => 0])->count();
+    $newUsers = User::find()->where(['status' => 0])->count();
+    $newEvents = Event::find()->where(['status' => 0])->count();
+    $newEvents = !Yii::$app->user->isGuest && Yii::$app->user->identity->role_id >= User::ROLE_MANAGER && $newEvents != 0 ? "<sup><span class='new'> {$newEvents} </span></sup>" : '';
 ?>
 <?php $this->beginBody() ?>
 
@@ -57,9 +60,9 @@ use app\models\User;
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => 'Рейтинг', 'url' => ['/site/rating']],
-            !Yii::$app->user->isGuest&&Yii::$app->user->identity->role_id > User::ROLE_MANAGER ?
-                ['label' => "Участники". ($new > 0 ?" <sup><span class='new'> {$new} </span></sup>":""), 'url' => ['/site/members']]:"",
-//          ['label' => 'Мероприятия', 'url' => ['/site/events']],
+            !Yii::$app->user->isGuest&&Yii::$app->user->identity->role_id >= User::ROLE_MANAGER ?
+                ['label' => "Участники". ($newUsers > 0 ?" <sup><span class='new'> {$newUsers} </span></sup>":""), 'url' => ['/site/members']]:"",
+            ['label' => 'Мероприятия '.$newEvents, 'url' => ['/site/events']],
             !Yii::$app->user->isGuest ? (
             [
                 'label' => $userinfo,

@@ -10,7 +10,7 @@ use yii\helpers\Html;
 ?>
 <div class="panel panel-default">
   <!-- Default panel contents -->
-  <div class="panel-heading">Рейтинг участника <b><?= $username ?></b></div>
+  <div class="panel-heading">Рейтинг участника <b><?= Html::a($user->berry, ['site/profile', 'uid' => $user->id]); ?></b></div>
 
   <!-- Table -->
   <table class="table">

@@ -81,7 +81,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
     <div class="page-header">
         <h1>
             <?=$user->surname.' '.$user->name.' '.$user->patronymic ?>
-            <?php if($user->id === Yii::$app->user->identity->id):?>
+            <?php if (!Yii::$app->user->isGuest&&Yii::$app->user->identity->role_id >= User::ROLE_MANAGER):?>
                 <a href="<?= Url::to(['user/edit']) ?>"><sup><i class="glyphicon glyphicon-pencil btn-edit"></i></sup></a>
             <?php endif; ?>
             <small class="header-role"><?= $user->getRoleName() ?></small>
@@ -163,7 +163,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
                             [
                                 'attribute' => 'rating',
                                 'label' => 'Рейтинг',
-                                'value' => Html::a($user->rating(), ['site/userrating', 'uid' => $user->id]),
+                                'value' => $user->rating()?Html::a($user->rating(), ['site/userrating', 'uid' => $user->id]):0,
                                 'format' => 'raw'
                             ],
                             [
@@ -176,9 +176,11 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
                 ?>
 
                 <div class="events" style="margin-bottom: 20px">
-                    <?php foreach ($events as $event): ?>
-                        <?= Html::a($event->name, ['site/event', 'id' => $event->id], ['class' => 'btn btn-warning']);?>
-                    <?php endforeach; ?>
+                    <?php foreach ($events as $event){
+                        if($event->status){
+                            echo Html::a($event->name, ['site/event', 'id' => $event->id], ['class' => 'btn btn-warning']).' ';
+                        }
+                    }?>
                 </div>
 
                 <?php if((Yii::$app->user->identity->role_id == User::ROLE_ADMIN) || (Yii::$app->user->identity->role_id == User::ROLE_MANAGER) ): ?>

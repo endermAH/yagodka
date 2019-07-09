@@ -9,11 +9,12 @@
 use yii\helpers\Html;
 use app\models\User;
 use app\models\EventToUser;
+use app\models\Event;
 
 $this->title = $event->name;
 $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons/logo.png']);
 
-$manager_id = EventToUser::find()->where(['event_id' => $event['id'], 'role' => '1'])->one()->id;
+$manager_id = EventToUser::find()->where(['event_id' => $event['id'], 'role' => Event::ROLE_MANAGER])->one()->user_id;
 $manager = User::findIdentity($manager_id);
 $team = $event->users;
 
@@ -66,7 +67,6 @@ $team = $event->users;
         <div class="col-md-6">
             <h1><?= $event['name'] ?></h1>
         </div>
-
     </div>
 </div>
 <div class="row">
@@ -81,7 +81,7 @@ $team = $event->users;
                     <div class="one"><?= Html::img(User::userAvatar($manager), ['class' => "medium-avatar"]) ?></div>
                     <div class="two">
                         <h3 style="margin-bottom: 20px;">
-                            <?= $manager['surname'] . ' ' . $manager['name'] . ' ' . $manager['patronymic'] ?>
+                            <?= Html::a($manager['surname'] . ' ' . $manager['name'] . ' ' . $manager['patronymic'], ['site/profile', 'uid' => $manager_id]) ?>
                         </h3></div>
                 </div>
 
@@ -101,8 +101,8 @@ $team = $event->users;
                                 </div>
                             </div>
                         </div>
+                        <?php $i++ ?>
                     <?php endif; ?>
-                    <?php $i++ ?>
                 <?php endforeach; ?>
             </div>
         </div>
@@ -113,8 +113,9 @@ $team = $event->users;
             </div>
             <div class="panel-body">
                 <p><b>Дата проведения:</b> <?= $event['date'] ?> </p>
-                <p><b>Уровень мероприятия:</b> <?= $event['level'] ?> </p>
+                <p><b>Уровень мероприятия:</b> <?= Event::$event_levels[$event['level']] ?> </p>
                 <p><b>Место проведения:</b> <?= $event['place'] ?> </p>
+                <p><b>Охват: </b> <?= $event['coverage'] ?> </p>
             </div>
         </div>
     </div>
@@ -129,6 +130,20 @@ $team = $event->users;
 
                     <div class="panel-body">
                         <?= $event['description'] ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="padding: 10px">
+            <div class="col-md-12" style="padding: 1px 1px;">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Ссылки
+                    </div>
+
+                    <div class="panel-body">
+                        <?= $event['links'] ?>
                     </div>
                 </div>
             </div>

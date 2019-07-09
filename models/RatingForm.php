@@ -14,6 +14,7 @@ use app\models\User;
 
 class RatingForm extends Model
 {
+
     public $count;
     public $comment;
 
@@ -41,7 +42,9 @@ class RatingForm extends Model
                 $record->$key = $value;
             }
             $record->user_id = $uid;
-            return $record->save();
+            $user = User::findIdentity($uid);
+            $user->cash += $this->count;
+            return $record->save() && $user->save();
         }
     }
 

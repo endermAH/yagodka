@@ -15,7 +15,6 @@ use yii\helpers\Html;
 
 class EventForm extends Model
 {
-    //Регэксп взят из недр yii
     public $name;
     public $date;
     public $place;
@@ -26,23 +25,13 @@ class EventForm extends Model
     public $coverage;
     public $org;
     public $cluborg;
-    public $orgFlag = false;
     public $orgs;
-
-    public $event_levels = [
-        '1' => 'Факультетское',
-        '2' => 'Внутривузовское',
-        '3' => 'Межвузовское',
-        '4' => 'Городское',
-        '5' => 'Региональное',
-        '6' => 'Всеросийское',
-        '7' => 'Международное'
-    ];
 
     public function rules()
     {
         return [
-            [['name', 'date', 'place', 'description', 'program', 'links', 'level', 'coverage', 'org', 'cluborg', 'orgFlag', 'orgs'], 'required', 'message' => "Это поле не может быть пустым"],
+            [['orgs', 'name', 'date', 'place', 'description', 'program', 'links', 'level', 'coverage', 'org', 'cluborg'], 'required', 'message' => "Это поле не может быть пустым"],
+            //['name', 'unique', 'targetClass' => Event::class, 'message' => 'Этот название уже используется'],
             [['coverage', 'org', 'cluborg'], 'integer'],
             ['level', 'integer', 'min' => 1, 'max' => 7],
         ];
@@ -50,16 +39,63 @@ class EventForm extends Model
 
     public function register()
     {
-        var_dump($this->orgs);
-        die;
-
         if (!$this->validate())
             return false;
 
         $event = new Event();
+        $dep = new EventToUser();
+
         foreach ($this->attributes as $key => $value) {
+            if ($key == 'orgs') continue;
             $event->$key = $value;
         }
+
+        $event->status = 0;
+        $event->save();
+
+        $event = Event::find()->where(['name' => $this->name])->one();
+
+        $dep->user_id = Yii::$app->user->getId();
+        $dep->event_id = $event->id;
+        $dep->role = Event::ROLE_MANAGER;
+        $dep->save();
+
+        foreach ($this->orgs as $org) {
+            $dep = new EventToUser();
+            $dep->user_id = $org;
+            $dep->event_id = $event->id;
+            $dep->role = Event::ROLE_ORGANIZER;
+            $dep->save();
+        }
+        return true;
+    }
+
+    public function change($eid) {
+        if (!$this->validate())
+            return false;
+
+        $event = Event::findIdentity($eid);
+        foreach ($this->attributes as $key => $value) {
+            if ($key == 'orgs') continue;
+            $event->$key = $value;
+        }
+
+        $todel = EventToUser::find()->where(['event_id' => $eid])->andWhere(['<>', 'role', Event::ROLE_MANAGER])->all();
+        foreach ($todel as $del) {
+            $del -> delete();
+        }
+
+        foreach ($this->orgs as $org) {
+            $dep = new EventToUser();
+            $dep->user_id = $org;
+            $dep->event_id = $event->id;
+            $dep->role = Event::ROLE_ORGANIZER;
+            $dep->save();
+        }
+
+        $event->status = 0;
+        $event->save();
+
         return true;
     }
 
@@ -76,7 +112,8 @@ class EventForm extends Model
             'level' => 'Уровень мероприятия',
             'coverage' => 'Охват мероприятия',
             'org' => 'Количество организаторов',
-            'cluborg' => 'Количество организаторов от клуба'
+            'cluborg' => 'Количество организаторов от клуба',
+            'orgs' => 'Выберите организаторов мероприятия',
         ];
     }
 
@@ -84,7 +121,8 @@ class EventForm extends Model
     {
         return [
             'date' => 'Формат: дд.мм.гггг-дд.мм.гггг, если больше одного дня',
-            'links' => 'Посты в IS, Ягодном, ссылки на группы мероприятий'
+            'links' => 'Посты в IS, Ягодном, ссылки на группы мероприятий',
+            'orgs' => 'Себя выбирать НЕ нужно!',
         ];
     }
 

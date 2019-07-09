@@ -4,6 +4,8 @@ namespace app\controllers;
 
 use app\models\Event;
 use app\models\EventForm;
+use app\models\EventToUser;
+use app\models\OrgForm;
 use app\models\Rating;
 use app\models\RatingForm;
 use Yii;
@@ -35,7 +37,7 @@ class SiteController extends Controller
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['register', 'login', 'index', 'rating', 'events'],
+                        'actions' => ['register', 'login', 'index', 'rating', 'events', 'event', 'profile'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
@@ -180,6 +182,11 @@ class SiteController extends Controller
     public function actionRating()
     {
         $rating = User::find()->orderBy(['rating' => SORT_DESC])->all();
+        foreach ($rating as $record) {
+            $record->rating = $record->rating();
+            $record->save();
+            $rating = User::find()->orderBy(['rating' => SORT_DESC])->all();
+        }
         return $this->render('rating',
             [
                 'rating' => $rating,
@@ -235,34 +242,126 @@ class SiteController extends Controller
 
     public function actionUserrating($uid) {
         $rating = Rating::find()->where(['user_id' => $uid])->all();
-        $username = User::findIdentity($uid)->berry;
+        $user = User::findIdentity($uid);
         //var_dump($rating);
         //die;
         return $this->render('userrating', [
             'rating' => $rating,
-            'username' => $username
+            'user' => $user
         ]);
     }
 
     public function actionNewevent() {
         $model = new EventForm();
 
-        if ($model->load(Yii::$app->request->post())){
+        $allusers = User::find()->where(['<>','id', Yii::$app->user->getId()])->andWhere(['status' => 1])->all();
+        $users = [];
+        foreach ($allusers as $user) {
+            $users[$user->id] = $user->berry;
+        }
 
-            if ($model->orgFlag) {
-                if ($model->register()) return $this->goBack();
-            } else {
-                $users = User::find()->where(['<>','id', Yii::$app->user->getId()])->andWhere(['status' => 1])->all();
-                return $this->render('addorgs', [
-                    'users' => $users,
-                    'model' => $model,
-                        ]
-                );
-            }
+        if ($model->load(Yii::$app->request->post()) && $model->register()){
+            return $this->goBack();
         }
 
         return $this->render('newevent', [
             'model' => $model,
+            'users' => $users
         ]);
+    }
+
+//    public function actionAddorg($eid) {
+//        $orgModel = new OrgForm();
+//        $allusers = User::find()->where(['<>','id', Yii::$app->user->getId()])->andWhere(['status' => 1])->all();
+//        $model = Event::findIdentity($eid);
+//        $users = [];
+//        foreach ($allusers as $user) {
+//            $users[$user->id] = $user->userInitials();
+//        }
+//
+//        if ($model->load(Yii::$app->request->post()) && $model->register()){
+//            //return $this->goBack();
+//            echo '<pre>';
+//            var_dump($this->orgs);
+//            echo '</pre>';
+//            die;
+//        }
+//
+//        return $this->render('addorgs', [
+//                'users' => $users,
+//                'orgModel' => $orgModel,
+//                'model' => $model
+//            ]
+//        );
+//    }
+
+    public function actionEvents(){
+        $trueEvents = Event::find()->where(['status' => 1])->all();
+        $ucEvents = Event::find()->where(['status' => 0])->all();
+
+        return $this->render('events', [
+            'trueEvents' => $trueEvents,
+            'ucEvents' => $ucEvents
+        ]);
+    }
+
+    public function actionEditevent($eid){
+        $event = Event::findIdentity($eid);
+        $model = new EventForm();
+        $team = $event->users;
+
+        $allusers = User::find()->where(['status' => 1])->all();
+        $users = [];
+        foreach ($allusers as $user) {
+            $users[$user->id] = $user->berry;
+        }
+
+        if ($model->load(Yii::$app->request->post()) && $model->change($eid)){
+            return $this->redirect(['site/events', 'eid'=>$eid]);
+        }
+
+        foreach ($model->attributes as $key => $value) {
+            if ($key == 'orgs') continue;
+            $model->$key = $event->$key;
+        }
+
+        foreach ($team as $member) {
+            if (EventToUser::findOne(['user_id' => $member->id, 'event_id' => $eid])->role == 1) continue;
+            $model->orgs[] = $member->id;
+            }
+
+        return $this->render('newevent', [
+            'model' => $model,
+            'users' => $users
+        ]);
+    }
+
+    public function actionConfirmevent($eid) {
+        $event = Event::findIdentity($eid);
+        if ($event->status) {
+            $records = Rating::findAll(['service' => $eid]);
+            foreach ($records as $record) {
+                $user = User::findOne(['id' => $record->user_id]);
+                $user->cash -= $record->count;
+                $user->save();
+                $record->delete();
+            }
+        } else {
+            $team = $event->users;
+            foreach ($team as $member) {
+                $role = EventToUser::findOne(['user_id' => $member->id, 'event_id' => $eid])->role;
+                $record = new Rating();
+                $record->user_id = $member->id;
+                $record->comment = $event->name.' - '.Rating::$role_names[$role];;
+                $record->count = Rating::$role_rating[$role];
+                $record->service = $eid;
+                $record->save();
+                $member->cash += Rating::$role_rating[$role];
+                $member->save();
+            }
+        }
+        $event->status = !$event->status;
+        $event->save();
+        return $this->redirect(['site/events']);
     }
 }
