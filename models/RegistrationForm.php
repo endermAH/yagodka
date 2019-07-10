@@ -48,6 +48,14 @@ class RegistrationForm extends Model
         ];
     }
 
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios['update'] = ['name', 'surname', 'berry', 'role_id'];
+        $scenarios['register'] = ['username', 'password', 'password_repeat', 'name', 'surname', 'berry', 'roole_id', 'status'];
+        return $scenarios;
+    }
+
     public function register()
     {
         if (!$this->validate())
@@ -62,6 +70,19 @@ class RegistrationForm extends Model
         return $user->save();
     }
 
+    public function update($uid) {
+        if (!$this->validate())
+            return false;
+
+        $user = User::findOne(['id' => $uid]);
+        $user->name = $this->name;
+        $user->surname = $this->surname;
+        $user->patronymic = $this->patronymic;
+        $user->berry = $this->berry;
+        $user->role_id = $this->role_id;
+        return $user->save();
+
+    }
 
     public function attributeLabels()
     {
@@ -73,6 +94,7 @@ class RegistrationForm extends Model
             'patronymic' => 'Отчество',
             'password_repeat' => 'Повторите пароль',
             'berry' => 'Ягодка',
+            'role_id' => 'Должность',
         ];
     }
 

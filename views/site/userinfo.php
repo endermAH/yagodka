@@ -82,7 +82,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
         <h1>
             <?=$user->surname.' '.$user->name.' '.$user->patronymic ?>
             <?php if (!Yii::$app->user->isGuest&&Yii::$app->user->identity->role_id >= User::ROLE_MANAGER):?>
-                <a href="<?= Url::to(['user/edit']) ?>"><sup><i class="glyphicon glyphicon-pencil btn-edit"></i></sup></a>
+                <a href="<?= Url::to(['site/edit-user', 'uid' => $user->id]) ?>"><sup><i class="glyphicon glyphicon-pencil btn-edit"></i></sup></a>
             <?php endif; ?>
             <small class="header-role"><?= $user->getRoleName() ?></small>
         </h1>

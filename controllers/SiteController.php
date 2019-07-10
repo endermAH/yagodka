@@ -203,6 +203,7 @@ class SiteController extends Controller
 
     public function actionRegister() {
         $model = new RegistrationForm();
+        $model->scenario = 'register';
 
         if ($model->load(Yii::$app->request->post()) && $model->register()){
             return $this->goBack();
@@ -371,5 +372,26 @@ class SiteController extends Controller
         $event->status = !$event->status;
         $event->save();
         return $this->redirect(['site/events']);
+    }
+
+    public function actionEditUser($uid){
+        $model = new RegistrationForm();
+        $user = User::findOne(['id' => $uid]);
+
+        foreach ($model->attributes as $key => $value) {
+            if ($key == 'password_repeat') continue;
+            $model->$key = $user->$key;
+        }
+
+        $model->scenario = 'update';
+
+        if ($model->load(Yii::$app->request->post()) && $model->update($uid)){
+            return $this->redirect(['site/profile', 'uid' => $uid]);
+        }
+
+        return $this->render('register',[
+            'model' => $model,
+            'uid' => $uid,
+        ]);
     }
 }
