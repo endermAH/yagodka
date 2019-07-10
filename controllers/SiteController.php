@@ -82,7 +82,15 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $member_count = User::find()->where(['status' => 1])->count();
+        $event_count = Event::find()->where(['status' => 1])->count();
+        $total_coverage = Event::find()->where(['status' => 1])->sum('coverage');
+
+        return $this->render('index', [
+            'member_count' => $member_count,
+            'event_count' => $event_count,
+            'total_coverage' => $total_coverage
+        ]);
     }
 
     /**

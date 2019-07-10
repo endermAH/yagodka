@@ -71,7 +71,8 @@ class RegistrationForm extends Model
             'name' => 'Имя',
             'surname' => 'Фамилия',
             'patronymic' => 'Отчество',
-            'password_repeat' => 'Повторите пароль'
+            'password_repeat' => 'Повторите пароль',
+            'berry' => 'Ягодка',
         ];
     }
 

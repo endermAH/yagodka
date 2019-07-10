@@ -13,7 +13,7 @@ use yii\helpers\Html;
   <div class="panel-heading">Рейтинг участника <b><?= Html::a($user->berry, ['site/profile', 'uid' => $user->id]); ?></b></div>
 
   <!-- Table -->
-  <table class="table">
+  <table class="table table-striped">
       <thead>
           <tr>
               <th>Баллы</th>
