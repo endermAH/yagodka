@@ -31,6 +31,7 @@ class RegistrationForm extends Model
         return [
             [['username', 'password', 'name', 'surname', 'berry'], 'required', 'message' => "Это поле не может быть пустым"],
             ['username', 'unique', 'targetClass' => User::class, 'message' => 'Этот логин уже занят, используйте другой'],
+            ['berry', 'unique', 'targetClass' => User::class, 'message' => 'Эта ягода уже занята, используйте другую'],
             //['email','unique','targetClass'=>User::class,'message' => 'Пользователь с таким адресом уже зарегистрирован'],
             ['username', 'string', 'max' => 64],
             ['berry', 'string', 'max' => 64],
@@ -52,7 +53,7 @@ class RegistrationForm extends Model
     {
         $scenarios = parent::scenarios();
         $scenarios['update'] = ['name', 'surname', 'berry', 'role_id'];
-        $scenarios['register'] = ['username', 'password', 'password_repeat', 'name', 'surname', 'berry', 'roole_id', 'status'];
+        $scenarios['register'] = ['username', 'password', 'password_repeat', 'name', 'surname', 'berry', 'role_id', 'status', 'patronymic'];
         return $scenarios;
     }
 

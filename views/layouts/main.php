@@ -28,7 +28,7 @@ use app\models\User;
     <?php $this->head() ?>
 
     <!-- Шрифт -->
-    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans" rel="stylesheet">
+<!--    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans" rel="stylesheet">-->
 <!--    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">-->
 
 </head>
@@ -62,6 +62,13 @@ use app\models\User;
             ['label' => 'Рейтинг', 'url' => ['/site/rating']],
             !Yii::$app->user->isGuest&&Yii::$app->user->identity->role_id >= User::ROLE_MANAGER ?
                 ['label' => "Участники". ($newUsers > 0 ?" <sup><span class='new'> {$newUsers} </span></sup>":""), 'url' => ['/site/members']]:"",
+            !Yii::$app->user->isGuest&&Yii::$app->user->identity->role_id >= User::ROLE_MANAGER ?
+                ['label' => "Баллы",
+                    'items' => [
+                        ['label' => 'Выезд', 'url' => ['/site/journey']],
+                        ['label' => 'Собрание', 'url' => ['/site/profile', 'uid' => Yii::$app->user->identity->id]],
+                        ['label' => 'SMM', 'url' => ['/site/profile', 'uid' => Yii::$app->user->identity->id]],
+                ]]:"",
             ['label' => 'Мероприятия '.$newEvents, 'url' => ['/site/events']],
             !Yii::$app->user->isGuest ? (
             [

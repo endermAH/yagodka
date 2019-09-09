@@ -25,6 +25,18 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
         /*left: 50%;*/
         transform: translate(0, -50%);
     }
+
+    .sn-icon {
+        height: 5vh;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .sn-icons-row {
+        position: relative;
+        top: 10vh;
+        text-align: center;
+    }
 </style>
 <div class="site-index">
 
@@ -53,6 +65,14 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
                     <div class="stat-text text-center"> <?= $member_count ?> <p style="font-size: 2vh">УЧАСТНИКОВ <br> В КЛУБЕ</p> </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <p class="sn-icons-row">
+            <?= Html::a('<img src="icons/vk.png" class="sn-icon"/>', 'https://vk.com/yagodkaclab') ?>
+            </p>
         </div>
     </div>
 </div>

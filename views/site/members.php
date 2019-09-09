@@ -40,7 +40,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
                     <div class="col-xs-3">
                         <div class="table-text">
                             <?php if(
-                                    (Yii::$app->user->identity->role_id > \app\models\User::ROLE_MANAGER) &&
+                                    (Yii::$app->user->identity->role_id >= \app\models\User::ROLE_MANAGER) &&
                                     ($user->id != Yii::$app->user->getId()) &&
                                     (Yii::$app->user->identity->role_id > $user->role_id)
                             ){

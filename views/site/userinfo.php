@@ -97,7 +97,15 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
 
         <!-- Блок с аватаркой -->
         <div>
-            <img class="avatar" src="<?= User::userAvatar($user) ?>">
+            <?php
+            $userAvatar = User::userAvatar($user);
+            $img = "<img class='avatar' src='{$userAvatar}'/>";
+            if (Yii::$app->user->identity->role_id >= User::ROLE_MANAGER) {
+                echo Html::a($img, ['site/upload-avatar', 'uid' =>$user->id]);
+            } else {
+                echo $img;
+            }
+            ?>
         </div>
 
         <div class="panel panel-default">

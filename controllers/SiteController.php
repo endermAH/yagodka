@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\Event;
 use app\models\EventForm;
 use app\models\EventToUser;
+use app\models\JourneyForm;
 use app\models\OrgForm;
 use app\models\Rating;
 use app\models\RatingForm;
@@ -18,6 +19,8 @@ use app\models\ContactForm;
 use app\models\User;
 use app\models\UserAttributes;
 use app\models\RegistrationForm;
+use app\models\UploadForm;
+use yii\web\UploadedFile;
 
 class SiteController extends Controller
 {
@@ -212,7 +215,8 @@ class SiteController extends Controller
         $model->password_repeat = '';
 
         return $this->render('register',[
-            'model' => $model
+            'model' => $model,
+            'uid' => NULL,
         ]);
     }
 
@@ -393,5 +397,42 @@ class SiteController extends Controller
             'model' => $model,
             'uid' => $uid,
         ]);
+    }
+
+    public function actionUploadAvatar($uid){
+        $model = new UploadForm();
+        $user = User::findIdentity($uid);
+
+        if (Yii::$app->request->isPost) {
+            $model->image = UploadedFile::getInstance($model, 'image');
+            if ($model->upload($uid)) {
+                return $this->redirect(['site/profile', 'uid' => $uid]);;
+            }
+        }
+
+        return $this->render('upload',[
+            'model' => $model,
+            'user' => $user,
+        ]);
+    }
+
+    public function actionJourney() {
+        $model = new JourneyForm();
+        $allusers = User::find()->where(['status' => 1])->all();
+        $users = [];
+        foreach ($allusers as $user) {
+            $users[$user->id] = $user->berry;
+        }
+
+        if ($model->load(Yii::$app->request->post()) && $model->add()){
+            return $this->redirect('site/rating');
+        }
+
+        return $this->render('journey',
+            [
+                'model' => $model,
+                'users' => $users
+            ]
+        );
     }
 }

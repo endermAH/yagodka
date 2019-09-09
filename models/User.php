@@ -41,6 +41,7 @@ class User extends ActiveRecord implements IdentityInterface
     const ROLE_MANAGER = 3;
     const ROLE_ADMIN = 4;
     const ROLE_SECRETORY = 2;
+    const ROLE_MENTOR = 5;
 
     public static function tableName()
     {
@@ -135,6 +136,8 @@ class User extends ActiveRecord implements IdentityInterface
                 return 'Секретарь';
             case User::ROLE_MANAGER:
                 return 'Менеджер клуба';
+            case User::ROLE_MENTOR:
+                return 'Ментор клуба';
             default :
                 return 'Член клуба';
         }

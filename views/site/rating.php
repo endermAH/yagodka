@@ -7,6 +7,7 @@
  */
 
 use yii\helpers\Html;
+use app\models\User;
 $i = 1;
 $this->title = "Рейтинг участников";
 $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons/members.png']);
@@ -26,7 +27,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
                     </div>
                     <div id="inner-div">
                         <?php foreach ($rating as $user): ?>
-                            <?php if($user->status): ?>
+                            <?php if($user->status && $user->role_id < User::ROLE_MENTOR): ?>
                                 <div class="row row-<?= ((($i % 2) == 1)?('even'):('odd'))?>">
                                     <div class="col-xs-1">
                                         <div class="table-text">

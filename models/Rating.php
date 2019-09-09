@@ -27,4 +27,8 @@ class Rating extends ActiveRecord
     {
         return '{{rating}}';
     }
+
+    public static function findByUID($uid) {
+        return self::findOne(['user_id' => $uid]);
+    }
 }
