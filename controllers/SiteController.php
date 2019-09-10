@@ -425,7 +425,7 @@ class SiteController extends Controller
         }
 
         if ($model->load(Yii::$app->request->post()) && $model->add()){
-            return $this->redirect('site/rating');
+            return $this->redirect(['site/rating']);
         }
 
         return $this->render('journey',
@@ -434,5 +434,16 @@ class SiteController extends Controller
                 'users' => $users
             ]
         );
+    }
+
+    public function actionDeleteUser($uid) {
+        $user = User::findIdentity($uid);
+        try { //TODO ПЕРЕДЕЛАТЬ НОРМАЛЬНО
+            $user->delete();
+        }
+        catch (\Exception $e) {
+            return $this->redirect(['site/members']);
+        }
+        return $this->redirect(['site/members']);
     }
 }

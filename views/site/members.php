@@ -44,7 +44,10 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
                                     ($user->id != Yii::$app->user->getId()) &&
                                     (Yii::$app->user->identity->role_id > $user->role_id)
                             ){
-                                if(!$user->status) echo Html::a('Принять', ['site/confirm', 'uid' => $user->id], ['class' => 'btn btn-success']);
+                                if(!$user->status) {
+                                    echo Html::a('Принять', ['site/confirm', 'uid' => $user->id], ['class' => 'btn btn-success']);
+                                    echo Html::a('Удалить', ['site/delete-user', 'uid' => $user->id], ['class' => 'btn btn-danger']);
+                                }
                                 else echo Html::a('Заблокировать', ['site/confirm', 'uid' => $user->id], ['class' => 'btn btn-danger']);
                             }
                             ?>
