@@ -35,7 +35,7 @@ class RatingForm extends Model
         ];
     }
 
-    public function changeRating($uid){
+    public function changeRating($uid) {
         if ($this->validate()){
             $record = new Rating();
             foreach ($this->attributes as $key => $value) {

@@ -13,6 +13,7 @@ use yii\base\Model;
 
 class JourneyForm extends Model
 {
+    const JOURNEY_COST = 1;
     public $members;
     public $name;
 
@@ -31,10 +32,14 @@ class JourneyForm extends Model
         foreach ($this->members as $member){
             $rating = new Rating();
             $rating->user_id = $member;
-            $rating->count = 1;
+            $rating->count = JourneyForm::JOURNEY_COST;
             $rating->comment = "Единение с Ягодным: \"{$this->name}\"";
             $rating->service = 0;
             $rating->save();
+
+            $user = User::findIdentity($member);
+            $user->cash += JourneyForm::JOURNEY_COST;
+            $user->save();
         }
 
         return true;

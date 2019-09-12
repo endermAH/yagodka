@@ -9,6 +9,7 @@ use app\models\JourneyForm;
 use app\models\OrgForm;
 use app\models\Rating;
 use app\models\RatingForm;
+use app\models\SMMForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -104,12 +105,21 @@ class SiteController extends Controller
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
+            $arr = UserAttributes::find()->where(['user_id' => Yii::$app->user->id])->all();
+            if (!empty($arr)){
+                return $this->goHome();}
+            else
+                return $this->redirect(['site/contact']);
         }
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            $arr = UserAttributes::find()->where(['user_id' => Yii::$app->user->id])->all();
+            if (!empty($arr)){
+                return $this->goHome();
+            }
+            else
+                return $this->redirect(['site/contact']);
         }
 
         $model->password = '';
@@ -446,4 +456,26 @@ class SiteController extends Controller
         }
         return $this->redirect(['site/members']);
     }
+
+    public function actionSmm() {
+        $allusers = User::find()->where(['status' => 1])->all();
+        $users = [];
+        foreach ($allusers as $user) {
+            $users[$user->id] = $user->berry;
+        }
+
+        $model = new SMMForm;
+
+        if ($model->load(Yii::$app->request->post()) && $model->addPost()){
+            return $this->redirect(['site/rating']);
+        }
+
+        return $this->render('SMM',
+            [
+                'model' => $model,
+                'users' => $users
+            ]
+        );
+    }
+
 }

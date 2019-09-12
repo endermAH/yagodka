@@ -52,7 +52,7 @@ class RegistrationForm extends Model
     public function scenarios()
     {
         $scenarios = parent::scenarios();
-        $scenarios['update'] = ['name', 'surname', 'berry', 'role_id'];
+        $scenarios['update'] = ['name', 'surname', 'role_id'];
         $scenarios['register'] = ['username', 'password', 'password_repeat', 'name', 'surname', 'berry', 'role_id', 'status', 'patronymic'];
         return $scenarios;
     }
