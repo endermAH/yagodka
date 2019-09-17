@@ -66,7 +66,7 @@ use app\models\User;
                 ['label' => "Баллы",
                     'items' => [
                         ['label' => 'Выезд', 'url' => ['/site/journey']],
-                        ['label' => 'Собрание', 'url' => ['/site/profile', 'uid' => Yii::$app->user->identity->id]],
+                        //['label' => 'Собрание', 'url' => ['/site/profile', 'uid' => Yii::$app->user->identity->id]],
                         ['label' => 'SMM', 'url' => ['/site/smm']],
                 ]]:"",
             ['label' => 'Мероприятия '.$newEvents, 'url' => ['/site/events']],

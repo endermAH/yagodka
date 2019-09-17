@@ -204,10 +204,13 @@ class SiteController extends Controller
     {
         $rating = User::find()->orderBy(['rating' => SORT_DESC])->all();
         foreach ($rating as $record) {
-            $record->rating = $record->rating();
-            $record->save();
-            $rating = User::find()->orderBy(['rating' => SORT_DESC])->all();
+            if (!is_null($tmp = $record->rating())) {
+                $record->rating = $record->rating();
+                $record->save();
+            }
         }
+        $rating = User::find()->orderBy(['rating' => SORT_DESC])->all();
+
         return $this->render('rating',
             [
                 'rating' => $rating,

@@ -41,9 +41,9 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
 <div class="site-index">
 
     <div class="jumbotron">
-        <h1>Я - ГОДКА, Я - МРАЗЬ!</h1>
+        <h1>МЕНЯЕМ ГРУЗДЬ - НА РАДОЗДЬ!</h1>
 
-        <p class="lead">Будь с нами, будь как мы!</p>
+        <p class="lead">Присоединяйся к нам!</p>
 
         <?php if(Yii::$app->user->isGuest) echo Html::a('Присоединиться', ['/site/register'], ['class'=>'btn btn-lg btn-success']) ?>
     </div>
