@@ -39,10 +39,15 @@ if (!Yii::$app->user->isGuest&&Yii::$app->user->identity->role_id >= User::ROLE_
             <tbody>
             <?php foreach ($ucEvents as $record): ?>
                 <tr>
-                    <?php if(Yii::$app->user->identity->role_id >= User::ROLE_MANAGER): ?>
+                    <?php
+                        $e2u = \app\models\EventToUser::findOne(['role' => Event::ROLE_MANAGER, 'event_id' => $record->id]);
+                        $manager_id = $e2u->user_id;
+                    ?>
+                    <?php if(Yii::$app->user->identity->role_id >= User::ROLE_MANAGER || Yii::$app->user->identity->id == $manager_id): ?>
                         <td style="vertical-align: middle"><?= Html::a($record->name, ['site/editevent', 'eid' => $record->id]) ?></td>
-                    <?php endif; ?>
-                    <td style="vertical-align: middle"><?= $record->name ?></td>
+                    <?php else: ?>
+                        <td style="vertical-align: middle"><?= $record->name ?></td>
+                    <?php endif;?>
                     <td style="vertical-align: middle"><?= $record->date ?></td>
                     <td style="vertical-align: middle"><?= Event::$event_levels[$record->level] ?></td>
                     <?php if(Yii::$app->user->identity->role_id >= User::ROLE_MANAGER): ?>

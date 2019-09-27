@@ -49,7 +49,7 @@ use app\models\User;
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => 'Студенческий клуб "Ягодка"',
+        'brandLabel' => 'Ягодка',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
