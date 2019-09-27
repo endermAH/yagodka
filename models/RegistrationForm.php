@@ -37,7 +37,7 @@ class RegistrationForm extends Model
             ['berry', 'string', 'max' => 64],
             ['password', 'string', 'min' => 6, 'max' => 128],
             [['name', 'surname', 'patronymic'], 'string', 'max' => 32, 'message' => 'Введенные данные должны содержать меньше 32 символов!'],
-            ['username', 'match', 'pattern' => '/^[a-z]\w*$/', 'message' => 'Имя пользователя не может содержать некоторые символы'],
+            ['username', 'match', 'pattern' => '/^[a-z]\w*$/i', 'message' => 'Имя пользователя не может содержать некоторые символы'],
             //['email', 'match', 'pattern' => self::VALID_EMAIL],
             //['id_itmo', 'integer', 'min' => 100000, 'max' => 9999999],
 
@@ -103,7 +103,6 @@ class RegistrationForm extends Model
     {
         return [
             'patronymic' => 'Можно пропустить, если нет',
-            'email' => 'Необходим для восстановления пароля'
         ];
     }
 }

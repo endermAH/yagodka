@@ -14,10 +14,10 @@ use yii\db\ActiveRecord;
 class Rating extends ActiveRecord
 {
     public static $role_rating = [
-      1 => 15,
-      2 => 10,
-      3 => 7,
-      4 => 5,
+      1 => 0,
+      2 => 0,
+      3 => 0,
+      4 => 0,
     ];
 
     public static $role_names = [

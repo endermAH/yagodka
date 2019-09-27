@@ -48,8 +48,15 @@ class SMMForm extends Model
         return [
             'name' => 'Опишите пост',
             'type' => 'Тип поста',
-            'link' => 'Ссылка на поста',
+            'link' => 'Ссылка на пост',
             'user_id' => 'Автор поста'
+        ];
+    }
+
+    public function attributeHints()
+    {
+        return [
+            'name' => 'Очень кратко - например "пост про собрания от 32.13.1945"',
         ];
     }
 

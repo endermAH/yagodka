@@ -81,9 +81,6 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
     <div class="page-header">
         <h1>
             <?=$user->surname.' '.$user->name.' '.$user->patronymic ?>
-            <?php if($user->id === Yii::$app->user->identity->id):?>
-                <a href="<?= Url::to(['user/edit']) ?>"><sup><i class="glyphicon glyphicon-pencil btn-edit"></i></sup></a>
-            <?php endif; ?>
             <small class="header-role"><?= $user->getRoleName() ?></small>
         </h1>
     </div>
@@ -93,19 +90,19 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
         'id' => 'contact-form',
         'layout' => 'horizontal',
         'fieldConfig' => [
-            'labelOptions' => ['class' => 'col-lg-1 control-label', 'encode' => true],
-            'template' => "{label}\n<div class=\"col-lg-3\">{input}</div>\n<div class=\"col-lg-8\">{error}</div>",
+            'labelOptions' => ['class' => 'col-lg-3 ', 'encode' => true],
+            'template' => "{label}<div class=\"col-lg-3\">{input}</div>\n<div class=\"col-lg-6\">{error}</div>",
         ],
     ]); ?>
 
-    <?= $form->field($model, 'phone')->textInput(['autofocus' => true])->label("<i class='fas fa-phone'></i>") ?>
-    <?= $form->field($model, 'email')->textInput()->label("<i class='fas fa-envelope'></i>") ?>
-    <?= $form->field($model, 'isu')->textInput()->label("<i class=\"far fa-address-card\"></i>") ?>
-    <?= $form->field($model, 'vk')->textInput()->label("<i class=\"fab fa-vk\"></i>") ?>
+    <?= $form->field($model, 'phone')->textInput(['autofocus' => true])->label("<i class='fas fa-phone'></i> Номер телефона") ?>
+    <?= $form->field($model, 'email')->textInput()->label("<i class='fas fa-envelope'></i> Адрес электронной почты") ?>
+    <?= $form->field($model, 'isu')->textInput()->label("<i class=\"far fa-address-card\"></i> Табельный номер ИСУ") ?>
+    <?= $form->field($model, 'vk')->textInput()->label("<i class=\"fab fa-vk\"></i> Ссылка ВК") ?>
 
 
     <div class="form-group">
-        <div class="col-lg-offset-1 col-lg-11">
+        <div class="col-lg-11">
             <?= Html::submitButton('Применить' ,['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
         </div>
     </div>
