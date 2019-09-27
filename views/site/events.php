@@ -20,7 +20,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
         <div class="col-md-6">
             <h1><?= $this->title ?></h1>
         </div>
-        <?php if(Yii::$app->user->identity->role_id >= User::ROLE_MANAGER): ?>
+        <?php if(!Yii::$app->user->isGuest&&Yii::$app->user->identity->role_id >= User::ROLE_MANAGER): ?>
             <div class="col-md-6">
                 <h1><?= Html::a('Добавить отчет', ['site/newevent'], ['class' => 'btn btn-success pull-right']) ?></h1>
             </div>
