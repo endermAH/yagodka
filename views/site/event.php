@@ -82,7 +82,9 @@ $team = $event->users;
                     <div class="two">
                         <h3 style="margin-bottom: 20px;">
                             <?= Html::a($manager['surname'] . ' ' . $manager['name'] . ' ' . $manager['patronymic'], ['site/profile', 'uid' => $manager_id]) ?>
-                        </h3></div>
+                            <br> <small>Главный организатор</small>
+                        </h3>
+                    </div>
                 </div>
 
             </div>
@@ -98,6 +100,12 @@ $team = $event->users;
                             <div class="col-xs-6">
                                 <div class="table-text">
                                     <?= Html::a($member->berry, ['/site/profile', 'uid' => $member->id], ['class' => 'berry-link'] ) ?>
+                                    <p><small>
+                                    <?php
+                                        $e2u = EventToUser::findOne(['user_id' => $member->id, 'event_id' => $event['id']]);
+                                        echo \app\models\Rating::$role_names[$e2u->role];
+                                    ?>
+                                    </small></p>
                                 </div>
                             </div>
                         </div>

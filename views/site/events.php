@@ -20,14 +20,16 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
         <div class="col-md-6">
             <h1><?= $this->title ?></h1>
         </div>
-        <div class="col-md-6">
-            <h1><?= Html::a('Добавить отчет', ['site/newevent'], ['class' => 'btn btn-success pull-right']) ?></h1>
-        </div>
+        <?php if(Yii::$app->user->identity->role_id >= User::ROLE_MANAGER): ?>
+            <div class="col-md-6">
+                <h1><?= Html::a('Добавить отчет', ['site/newevent'], ['class' => 'btn btn-success pull-right']) ?></h1>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 
 <?php
-if (!Yii::$app->user->isGuest&&Yii::$app->user->identity->role_id >= User::ROLE_MANAGER): ?>
+if (!Yii::$app->user->isGuest&&Yii::$app->user->identity->role_id >= User::ROLE_MEMBER): ?>
     <div class="panel panel-default">
         <!-- Default panel contents -->
         <div class="panel-heading">Неутвержденные мероприятия</div>
@@ -40,7 +42,9 @@ if (!Yii::$app->user->isGuest&&Yii::$app->user->identity->role_id >= User::ROLE_
                     <td style="vertical-align: middle"><?= Html::a($record->name, ['site/editevent', 'eid' => $record->id]) ?></td>
                     <td style="vertical-align: middle"><?= $record->date ?></td>
                     <td style="vertical-align: middle"><?= Event::$event_levels[$record->level] ?></td>
-                    <td style="vertical-align: middle"><?= Html::a('Утвердить', ['site/confirmevent', 'eid' => $record->id], ['class' => 'btn btn-success']); ?></td>
+                    <?php if(Yii::$app->user->identity->role_id >= User::ROLE_MANAGER): ?>
+                        <td style="vertical-align: middle"><?= Html::a('Утвердить', ['site/confirmevent', 'eid' => $record->id], ['class' => 'btn btn-success']); ?></td>
+                    <?php endif; ?>
                 </tr>
             <?php endforeach; ?>
             </tbody>

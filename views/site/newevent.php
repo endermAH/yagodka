@@ -33,18 +33,28 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
             'inline' => false,
         ],
     ]);
+
     echo $form->field($model, 'program')->widget(CKEditor::className(),[
         'editorOptions' => [
             'preset' => 'basic',
             'inline' => false,
         ],
     ]);
+
     echo $form->field($model, 'links')->widget(CKEditor::className(),[
         'editorOptions' => [
-            'preset' => 'basic',
+            'preset' => 'small',
             'inline' => false,
         ],
     ]);
+
+    echo $form->field($model, 'linksmedia')->widget(CKEditor::className(),[
+        'editorOptions' => [
+            'preset' => 'small',
+            'inline' => false,
+        ],
+    ]);
+
     echo $form->field($model, 'level')->dropDownList(
         \app\models\Event::$event_levels
     );
@@ -54,7 +64,23 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
 
     echo $form->field($model, 'orgs')->widget(Select2::classname(), [
         'data' => $users,
-        'options' => ['placeholder' => 'Выберите организатора', 'multiple' => true],
+        'options' => ['placeholder' => 'Выберите организаторов', 'multiple' => true],
+        'pluginOptions' => [
+            'allowClear' => false,
+        ],
+    ]);
+
+    echo $form->field($model, 'responsible')->widget(Select2::classname(), [
+        'data' => $users,
+        'options' => ['placeholder' => 'Выберите ответственных исполнителей', 'multiple' => true],
+        'pluginOptions' => [
+            'allowClear' => false,
+        ],
+    ]);
+
+    echo $form->field($model, 'volunteer')->widget(Select2::classname(), [
+        'data' => $users,
+        'options' => ['placeholder' => 'Выберите волонтеров', 'multiple' => true],
         'pluginOptions' => [
             'allowClear' => false,
         ],

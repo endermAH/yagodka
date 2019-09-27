@@ -17,9 +17,9 @@ class SMMForm extends Model
 {
 
     public static $post_costs = [
-        'Пост в инстаграмм' => 1,
-        'Пост в ВК' => 1,
-        'Статья в ВК' => 2
+        'Пост в инстаграмм' => 5,
+        'Пост в ВК' => 10,
+        'Статья в ВК' => 20
     ];
 
     public static $post_types = [

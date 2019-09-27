@@ -347,14 +347,24 @@ class SiteController extends Controller
         }
 
         foreach ($model->attributes as $key => $value) {
-            if ($key == 'orgs') continue;
+            if ($key == 'orgs' || $key == 'responsible' || $key == 'volunteer') continue;
             $model->$key = $event->$key;
         }
 
         foreach ($team as $member) {
-            if (EventToUser::findOne(['user_id' => $member->id, 'event_id' => $eid])->role == 1) continue;
-            $model->orgs[] = $member->id;
+            if (EventToUser::findOne(['user_id' => $member->id, 'event_id' => $eid])->role == Event::ROLE_ORGANIZER)
+                $model->orgs[] = $member->id;
             }
+
+        foreach ($team as $member) {
+            if (EventToUser::findOne(['user_id' => $member->id, 'event_id' => $eid])->role == Event::ROLE_VOLUNTEER)
+                $model->volunteer[] = $member->id;
+        }
+
+        foreach ($team as $member) {
+            if (EventToUser::findOne(['user_id' => $member->id, 'event_id' => $eid])->role == Event::ROLE_WORKER)
+                $model->responsible[] = $member->id;
+        }
 
         return $this->render('newevent', [
             'model' => $model,

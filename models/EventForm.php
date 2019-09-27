@@ -26,12 +26,17 @@ class EventForm extends Model
     public $org;
     public $cluborg;
     public $orgs;
+    public $done = 0;
+    public $responsible;
+    public $volunteer;
+    public $linksmedia;
 
     public function rules()
     {
         return [
-            [['orgs', 'name', 'date', 'place', 'description', 'program', 'links', 'level', 'coverage', 'org', 'cluborg'], 'required', 'message' => "Это поле не может быть пустым"],
+            [['name', 'date', 'place', 'description', 'program', 'links', 'level', 'coverage', 'org', 'cluborg', 'linksmedia'], 'required', 'message' => "Это поле не может быть пустым"],
             //['name', 'unique', 'targetClass' => Event::class, 'message' => 'Этот название уже используется'],
+            [['volunteer', 'orgs', 'responsible'], 'safe'],
             [['coverage', 'org', 'cluborg'], 'integer'],
             ['level', 'integer', 'min' => 1, 'max' => 7],
         ];
@@ -46,7 +51,7 @@ class EventForm extends Model
         $dep = new EventToUser();
 
         foreach ($this->attributes as $key => $value) {
-            if ($key == 'orgs') continue;
+            if ($key == 'orgs' || $key == 'responsible' || $key == 'volunteer') continue;
             $event->$key = $value;
         }
 
@@ -60,13 +65,36 @@ class EventForm extends Model
         $dep->role = Event::ROLE_MANAGER;
         $dep->save();
 
-        foreach ($this->orgs as $org) {
-            $dep = new EventToUser();
-            $dep->user_id = $org;
-            $dep->event_id = $event->id;
-            $dep->role = Event::ROLE_ORGANIZER;
-            $dep->save();
+        if ($this->orgs) {
+            foreach ($this->orgs as $org) {
+                $dep = new EventToUser();
+                $dep->user_id = $org;
+                $dep->event_id = $event->id;
+                $dep->role = Event::ROLE_ORGANIZER;
+                $dep->save();
+            }
         }
+
+        if ($this->volunteer) {
+            foreach ($this->volunteer as $org) {
+                $dep = new EventToUser();
+                $dep->user_id = $org;
+                $dep->event_id = $event->id;
+                $dep->role = Event::ROLE_VOLUNTEER;
+                $dep->save();
+            }
+        }
+
+        if ($this->responsible) {
+            foreach ($this->responsible as $org) {
+                $dep = new EventToUser();
+                $dep->user_id = $org;
+                $dep->event_id = $event->id;
+                $dep->role = Event::ROLE_WORKER;
+                $dep->save();
+            }
+        }
+
         return true;
     }
 
@@ -76,7 +104,7 @@ class EventForm extends Model
 
         $event = Event::findIdentity($eid);
         foreach ($this->attributes as $key => $value) {
-            if ($key == 'orgs') continue;
+            if ($key == 'orgs' || $key == 'responsible' || $key == 'volunteer') continue;
             $event->$key = $value;
         }
 
@@ -85,12 +113,34 @@ class EventForm extends Model
             $del -> delete();
         }
 
-        foreach ($this->orgs as $org) {
-            $dep = new EventToUser();
-            $dep->user_id = $org;
-            $dep->event_id = $event->id;
-            $dep->role = Event::ROLE_ORGANIZER;
-            $dep->save();
+        if ($this->orgs) {
+            foreach ($this->orgs as $org) {
+                $dep = new EventToUser();
+                $dep->user_id = $org;
+                $dep->event_id = $event->id;
+                $dep->role = Event::ROLE_ORGANIZER;
+                $dep->save();
+            }
+        }
+
+        if ($this->volunteer) {
+            foreach ($this->volunteer as $org) {
+                $dep = new EventToUser();
+                $dep->user_id = $org;
+                $dep->event_id = $event->id;
+                $dep->role = Event::ROLE_VOLUNTEER;
+                $dep->save();
+            }
+        }
+
+        if ($this->responsible) {
+            foreach ($this->responsible as $org) {
+                $dep = new EventToUser();
+                $dep->user_id = $org;
+                $dep->event_id = $event->id;
+                $dep->role = Event::ROLE_WORKER;
+                $dep->save();
+            }
         }
 
         $event->status = 0;
@@ -114,6 +164,8 @@ class EventForm extends Model
             'org' => 'Количество организаторов',
             'cluborg' => 'Количество организаторов от клуба',
             'orgs' => 'Выберите организаторов мероприятия',
+            'volunteer' => 'Выберите волонтеров мероприятия',
+            'responsible' => 'Выберите ответственных исполнителей мероприятия',
         ];
     }
 
