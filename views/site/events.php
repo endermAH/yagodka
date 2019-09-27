@@ -39,7 +39,10 @@ if (!Yii::$app->user->isGuest&&Yii::$app->user->identity->role_id >= User::ROLE_
             <tbody>
             <?php foreach ($ucEvents as $record): ?>
                 <tr>
-                    <td style="vertical-align: middle"><?= Html::a($record->name, ['site/editevent', 'eid' => $record->id]) ?></td>
+                    <?php if(Yii::$app->user->identity->role_id >= User::ROLE_MANAGER): ?>
+                        <td style="vertical-align: middle"><?= Html::a($record->name, ['site/editevent', 'eid' => $record->id]) ?></td>
+                    <?php endif; ?>
+                    <td style="vertical-align: middle"><?= $record->name ?></td>
                     <td style="vertical-align: middle"><?= $record->date ?></td>
                     <td style="vertical-align: middle"><?= Event::$event_levels[$record->level] ?></td>
                     <?php if(Yii::$app->user->identity->role_id >= User::ROLE_MANAGER): ?>
