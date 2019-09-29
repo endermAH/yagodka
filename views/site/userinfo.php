@@ -100,7 +100,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
             <?php
             $userAvatar = User::userAvatar($user);
             $img = "<img class='avatar' src='{$userAvatar}'/>";
-            if (!Yii::$app->user->isGuest&&Yii&&Yii::$app->user->identity->role_id >= User::ROLE_MANAGER) {
+            if (!Yii::$app->user->isGuest&&Yii::$app->user->identity->role_id >= User::ROLE_MANAGER) {
                 echo Html::a($img, ['site/upload-avatar', 'uid' =>$user->id]);
             } else {
                 echo $img;
