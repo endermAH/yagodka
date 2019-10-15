@@ -11,7 +11,7 @@ use yii\helpers\Html;
 use app\models\User;
 use app\models\Event;
 
-$this->title = 'Наши мероприятия';
+$this->title = 'Наши проекты и мероприятия мероприятия';
 $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons/logo.png']);
 ?>
 

@@ -43,7 +43,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
     <div class="jumbotron">
         <h1>МЕНЯЕМ ГРУЗДЬ - НА РАДОЗДЬ!</h1>
 
-        <p class="lead">Присоединяйся к нам!</p>
+        <p class="lead">Присоединяйся к нам!
 
         <?php if(Yii::$app->user->isGuest) echo Html::a('Присоединиться', ['/site/register'], ['class'=>'btn btn-lg btn-success']) ?>
     </div>
