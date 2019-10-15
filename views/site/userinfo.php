@@ -191,7 +191,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => 'icons
                     }?>
                 </div>
 
-                <?php if(!Yii::$app->user->isGuest&&((Yii::$app->user->identity->role_id == User::ROLE_ADMIN) || (Yii::$app->user->identity->role_id == User::ROLE_MANAGER) )): ?>
+                <?php if(!Yii::$app->user->isGuest&&((Yii::$app->user->identity->role_id >= User::ROLE_MANAGER))): ?>
                     <?php $form = ActiveForm::begin([
                         'id' => 'rating-form',
                         'layout' => 'horizontal',
