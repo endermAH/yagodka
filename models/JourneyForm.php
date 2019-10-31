@@ -13,7 +13,7 @@ use yii\base\Model;
 
 class JourneyForm extends Model
 {
-    const JOURNEY_COST = 5;
+    const JOURNEY_COST = 2;
     public $members;
     public $name;
 
